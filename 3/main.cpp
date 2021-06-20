@@ -1,24 +1,57 @@
 #include <iostream>
 class Screen{
+    int length=80, width=50;
+
+public:
+
+    int getLength(){
+        return length;
+    }
+    int getWidth(){
+        return width;
+    }
+
+};
+class Window{
     int x,y,a,b;
+    Screen* scr=new Screen;
 public:
     bool setXY(int valX, int valY, int valA, int valB){
-        if (valX < 0 || valY <0 || valA+valX > 80 || valB+valY > 50){
+        if (valX < 0 || valY <0 || valA+valX > scr->getLength() || valB+valY > scr->getWidth()){
             return false;
         }
-            //std::cout<<"Warning! Wrong coordinate or parameters of screen"<<std::endl;
         return true;
     }
-    friend class Func;
+    void size(int X, int Y, int A, int B){
+        x=X;
+        y=Y;
+        a=A;
+        b=B;
+    }
+    int getX(){
+        return  x;
+    }
+    int getY(){
+        return  y;
+    }
+    int getA(){
+        return  a;
+    }
+    int getB(){
+        return  b;
+    }
 };
 class Func{
-public:
+    Window* wind=new Window;
     Screen* scr=new Screen;
+public:
     void input(){
+        int inX, inY, inA, inB;
         for(;;){
             std::cout<<"Input coordinate and size"<<std::endl;
-            std::cin>>scr->x>>scr->y>>scr->a>>scr->b;
-            if (scr->setXY(scr->x,scr->y,scr->a,scr->b)){
+            std::cin>>inX>>inY>> inA>> inB;
+            if (wind->setXY(inX, inY, inA, inB)){
+                wind->size(inX, inY, inA, inB);
                 break;
             }
             else{
@@ -28,28 +61,26 @@ public:
         }
     }
     void move(int vecX, int vecY){
-        if (!scr->setXY(scr->x+vecX,scr->y+vecY,scr->a,scr->b)){
+        if (!wind->setXY(wind->getX()+vecX,wind->getY()+vecY,wind->getA(),wind->getB())){
             std::cout<<"Warning! Wrong coordinate or parameters of screen"<<std::endl;
         }
 
         else{
-            scr->x+=vecX;
-            scr->y+=vecY;
-            std::cout<<"New coordinate: x= "<<scr->x<<" and y= "<<scr->y<<std::endl;
+            wind->size(wind->getX()+vecX,wind->getY()+vecY,wind->getA(),wind->getB());
+            std::cout<<"New coordinate: x= "<<wind->getX()<<" and y= "<<wind->getY()<<std::endl;
         }
     }
     void  resize(){
         int newA, newB;
-        std::cout<<"x= "<<scr->x<<" and y= "<<scr->y<<" with parameters a= "<<
-        scr->a<<" and b= "<<scr->b<<std::endl;
+        std::cout<<"x= "<<wind->getX()<<" and y= "<<wind->getY()<<" with size a= "<<
+        wind->getA()<<" and b= "<<wind->getB()<<std::endl;
         for (;;){
             std::cout<<"Input new size"<<std::endl;
             std::cin>>newA>>newB;
-            if (scr->setXY(scr->x,scr->y,newA,newB)){
-                scr->a=newA;
-                scr->b=newB;
-                std::cout<<"x= "<<scr->x<<" and y= "<<scr->y<<" with parameters a= "<<
-                         scr->a<<" and b= "<<scr->b<<std::endl;
+            if (wind->setXY(wind->getX(),wind->getY(),newA,newB)){
+                wind->size(wind->getX(),wind->getY(),newA,newB);
+                std::cout<<"x= "<<wind->getX()<<" and y= "<<wind->getY()<<" with parameters a= "<<
+                         wind->getA()<<" and b= "<<wind->getB()<<std::endl;
                 break;
             }
             else{
@@ -59,10 +90,10 @@ public:
         }
     }
     void display(){
-        for(int i=0; i < 50; i++){
-            for(int j=0; j < 80; j++){
-                if (j >= scr->x && j <= scr->x+scr->a
-                    && i >= scr->y && i <= scr->y+scr->b){
+        for(int i=0; i < scr->getWidth(); i++){
+            for(int j=0; j < scr->getLength(); j++){
+                if (j >= wind->getX() && j <= wind->getX()+wind->getA()
+                    && i >= wind->getY() && i <= wind->getY()+wind->getB()){
                     std::cout<<"1";
                 }
                 else std::cout<<"0";
@@ -73,8 +104,11 @@ public:
 };
 
 int main() {
+
+
     std::string command;
     Func* func=new Func;
+
     func->input();
     for (;;){
         std::cout<<"Input command"<<std::endl;

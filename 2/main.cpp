@@ -1,84 +1,111 @@
 #include <iostream>
-#include <map>
 #include<string>
+#include <vector>
+
 class Number{
     std::string name;
     std::string number;
 public:
-    friend class Phone;
+    std::string getName(){
+        return name;
+    }
+    std::string getNumber(){
+        return number;
+    }
+    bool checkNumber(std::string nmb){
+        if (nmb[0]=='+' && nmb[1]=='7' && nmb.length()==12){
+            return true;
+        }
+        return false;
+    }
+    Number* setNum(std::string addName, std::string addNumber){
+        Number* num=new Number;
+        num->name=addName;
+        num->number=addNumber;
+        return num;
+    }
+    Number* setNum1(){
+        Number* num=new Number;
+        num->name="Ivanov";
+        num->number="+79151234567";
+        return num;
+    }
+    Number* setNum2(){
+        Number* num=new Number;
+        num->name="Ivanor";
+        num->number="+79151234568";
+        return num;
+    }
+    Number* setNum3(){
+        Number* num=new Number;
+        num->name="Ivanrv";
+        num->number="+79151234569";
+        return num;
+    }
+    Number* setNum4(){
+        Number* num=new Number;
+        num->name="Iranov";
+        num->number="+79151434567";
+        return num;
+    }
+    Number* setNum5(){
+        Number* num=new Number;
+        num->name="Ivarov";
+        num->number="+79151237567";
+        return num;
+    }
+    //friend  class Phone;
 };
-std::map<std::string,std::string> fall(){
-    std::map<std::string,std::string> fall;
-    fall["Ivanov"]="+79151234567";
-    fall["Ivanor"]="+79151234568";
-    fall["Ivanrv"]="+79151234569";
-    fall["Iranov"]="+79151434567";
-    fall["Ivarov"]="+79151237567";
-    return fall;
-}
+
 class Phone{
-public:
     Number* num=new Number;
-    std::map<std::string,std::string> list=fall();
-    void add(){
-        std::cout<<"Input name and number"<<std::endl;
-        std::cin>>num->name;
-        std::cin>>num->number;
-        if (num->number[0]=='+' && num->number[1]=='7' && num->number.length()==12){
-            list.insert(std::pair<std::string,std::string>(num->name,num->number));
+    std::vector<Number*> phoneList={
+            num->setNum1(),
+            num->setNum2(),
+            num->setNum3(),
+            num->setNum4(),
+            num->setNum5(),
+    };
+public:
+    void add(std::string addName, std::string addNumber){
+
+        if (num->checkNumber(addNumber)){
+            phoneList.push_back(num->setNum(addName,addNumber));
         }
         else{
             std::cout<<"Error! Number should be start at '+7'"<<std::endl;
         }
     }
-    void call(){
-        std::string some;
-        std::cout<<"Name of number?"<<std::endl;
-        std::cin>>some;
-        if (some=="name"){
-            std::cin>>num->name;
-            std::cout<<"CALL:"<< list.find(num->name)->first<<" "<<list.find(num->name)->second;
-        }
-        else if (some=="number"){
-            std::cin>>num->number;
-            for (std::map<std::string, std::string>:: iterator it = list.begin();
-                 it !=list.end(); it++) {
-                if (it->second == num->number) {
-                    std::cout << "CALL:" << it->first << " " << it->second;
+    void call(std::string call){
+
+        for (int i=0; i < phoneList.size(); i++){
+            if (phoneList[i]->getName()==call || phoneList[i]->getNumber()==call){
+                    std::cout<<"CALL:"<<phoneList[i]->getName()<<
+                    " "<<phoneList[i]->getNumber()<<std::endl;
                     break;
+            }
+        }
+    }
+    void sms(std::string sms){
+
+        for (int i=0; i < phoneList.size(); i++) {
+            if (phoneList[i]->getName() == sms || phoneList[i]->getNumber() == sms) {
+                std::cout << "Massage to::" <<phoneList[i]->getName()<<
+                                            " "<<phoneList[i]->getNumber()<<std::endl;
+                std::cout<<"Input massage"<<std::endl;
+                std::string massage="";
+                std::cin.ignore(INT_MAX, '\n');
+                std::getline(std::cin, massage);
+                if (massage!=""){
+                    std::cout<<"Massage "<<massage<<" submitted"<<std::endl;
                 }
+                else {
+                    std::cout<<"Cancel"<<std::endl;
+                }break;
             }
         }
 
-    }
-    void sms(){
-        std::string massage="";
-        std::string some;
-        std::cout<<"Name of number?"<<std::endl;
-        std::cin>>some;
-        if (some=="name"){
-            std::cin>>num->name;
-            std::cout<<"Massage to::"<< list.find(num->name)->first<<" "<<list.find(num->name)->second<<std::endl;
-        }
-        else if (some=="number"){
-            std::cin>>num->number;
-            for (std::map<std::string, std::string>:: iterator it = list.begin();
-                 it !=list.end(); it++) {
-                if (it->second == num->number) {
-                    std::cout << "Massage to:" << it->first << " " << it->second<<std::endl;
-                    break;
-                }
-            }
-        }
-        std::cout<<"Input massage"<<std::endl;
-        std::getline(std::cin, massage);
-        //std::cin>>massage;
-        if (massage!=""){
-            std::cout<<"Massage "<<massage<<" submitted"<<std::endl;
-        }
-        else {
-            std::cout<<"Cancel"<<std::endl;
-        }
+
 
     }
 };
@@ -90,13 +117,22 @@ int main() {
         std::cout<<"\nInput command"<<std::endl;
         std::cin>>command;
         if(command=="add"){
-            phone->add();
+            std::string addName, addNumber;
+            std::cout<<"Input name and number"<<std::endl;
+            std::cin>>addName>>addNumber;
+            phone->add(addName, addNumber);
         }
         else if(command=="call"){
-            phone->call();
+            std::string call;
+            std::cout<<"Name of number which needed?"<<std::endl;
+            std::cin>>call;
+            phone->call(call);
         }
         else if(command=="sms"){
-            phone->sms();
+            std::string sms;
+            std::cout<<"Name of number which needed?"<<std::endl;
+            std::cin>>sms;
+            phone->sms(sms);
         }
         else if(command=="exit"){
             break;

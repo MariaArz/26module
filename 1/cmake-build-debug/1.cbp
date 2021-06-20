@@ -83,6 +83,9 @@
 		<Unit filename="C:/Users/User/OneDrive/Desktop/C++/26/1/main.cpp">
 			<Option target="1"/>
 		</Unit>
+		<Unit filename="C:/Users/User/OneDrive/Desktop/C++/26/1/track-list.h">
+			<Option target="1"/>
+		</Unit>
 		<Unit filename="C:/Users/User/OneDrive/Desktop/C++/26/1/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
